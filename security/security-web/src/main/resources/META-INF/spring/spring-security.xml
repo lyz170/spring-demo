@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!-- source目录下的css,js文件不设权限 -->
+    <sec:http pattern="/resources/**" security="none"/>
+
+    <!-- use-expressions=true: 需要使用表达式方式来写权限 -->
+    <!-- auto-config=true: 则使用<sec:model-login/> -->
+    <sec:http use-expressions="true" auto-config="true">
+
+        <!-- headers拦截过滤的设定。这里暂时用不到 -->
+        <!--
+        <sec:headers>
+            <sec:cache-control/>
+            <sec:content-type-options/>
+            <sec:hsts/>
+            <sec:frame-options/>
+            <sec:xss-protection/>
+        </sec:headers>
+        -->
+        <sec:csrf />
+        <sec:access-denied-handler ref="accessDeniedHandler"/>
+
+        <!-- login-page: 登录的URL [default:/spring_security_login] -->
+        <!-- default-target-url: 认证成功后的URL(authentication-success-handler-ref配置后，此项不用配置) [default:/] -->
+        <!-- login-processing-url: 指定了按下登录按钮时要访问的URL，也是认证处理的URL [default:/login] -->
+        <!-- always-use-default-target: 指定了是否在身份验证通过后总是跳转到default-target-url属性指定的URL
+            (authentication-success-handler-ref配置后，此项不用配置) -->
+        <!-- authentication-failure-url: 认证失败后的URL(authentication-failure-handler-ref配置后，此项不用配置) -->
+        <!-- authentication-success-handler-ref: 认证成功时的自定义设定 -->
+        <!-- authentication-failure-handler-ref: 认证失败时的自定义设定 -->
+        <sec:form-login username-parameter="accountName"
+                        password-parameter="password"
+                        login-page="/"
+                        authentication-success-handler-ref="authenticationSuccessHandler"
+                        authentication-failure-handler-ref="authenticationFailureHandler"/>
+
+        <!-- logout-url：指定了用于响应退出系统请求的URL -->
+        <!-- logout-success-url：退出系统后转向的URL -->
+        <!-- invalidate-session：指定在退出系统时是否要销毁Session -->
+        <!-- delete-cookies：刪除key=JSESSIONID的cookie -->
+        <sec:logout logout-url="logout" logout-success-url="/"
+                    invalidate-session="true" delete-cookies="JSESSIONID"/>
+
+        <!-- max-sessions:允许用户帐号登录的次数。范例限制用户只能登录一次。
+             exception-if-maximum-exceeded: 默认为false，此值表示：用户第二次登录时，前一次的登录信息都被清空
+             exception-if-maximum-exceeded="true"时系统会拒绝第二次登录 -->
+        <sec:session-management>
+            <sec:concurrency-control max-sessions="1" error-if-maximum-exceeded="false"/>
+        </sec:session-management>
+
+        <sec:intercept-url pattern="/" access="permitAll"/>
+        <sec:intercept-url pattern="/sec01/sign_in" access="permitAll"/>
+        <sec:intercept-url pattern="/sec01/sign_up" access="permitAll"/>
+        <sec:intercept-url pattern="/sec01/username_not_found" access="permitAll"/>
+        <sec:intercept-url pattern="/sec01/welcome" access="hasRole('ROLE_SEC01')"/>
+    </sec:http>
+
+    <!-- 认证成功调用 主要实现AuthenticationSuccessHandler这个类的onAuthenticationSuccess方法 -->
+    <bean id="authenticationSuccessHandler"
+          class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+        <property name="defaultTargetUrl" value="/sec01/welcome"/>
+    </bean>
+
+    <!-- 认证失败调用 主要实现AuthenticationFailureHandler类的onAuthenticationFailure方法 -->
+    <bean id="authenticationFailureHandler"
+          class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.security.core.userdetails.UsernameNotFoundException">
+                    /sec01/username_not_found
+                </prop>
+                <prop key="org.springframework.security.authentication.BadCredentialsException">
+                    /sec01/username_not_found
+                </prop>
+                <!--
+                <prop key="org.springframework.security.authentication.DisabledException">
+                    /login/disabled
+                </prop>
+                <prop key="org.springframework.security.authentication.ProviderNotFoundException">
+                    /login/providerNotFound
+                </prop>
+                <prop key="org.springframework.security.authentication.AuthenticationServiceException">
+                    /login/authenticationService
+                </prop>
+                -->
+            </props>
+        </property>
+    </bean>
+
+<!-- CSRF Protection -->
+    <!-- TODO -->
+    <bean id="accessDeniedHandler"
+          class="org.springframework.security.web.access.DelegatingAccessDeniedHandler">
+        <constructor-arg index="0">
+            <map>
+                <entry key="org.springframework.security.web.csrf.InvalidCsrfTokenException">
+                    <bean class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+                        <property name="errorPage" value="/WEB-INF/views/common/error/invalidCsrfTokenError.jsp"/>
+                    </bean>
+                </entry>
+                <entry key="org.springframework.security.web.csrf.MissingCsrfTokenException">
+                    <bean class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+                        <property name="errorPage" value="/WEB-INF/views/common/error/missingCsrfTokenError.jsp"/>
+                    </bean>
+                </entry>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <bean
+                    class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+                <property name="errorPage"
+                          value="/WEB-INF/views/common/error/accessDeniedError.jsp"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- 加入自定义UserDetailsService的配置 -->
+    <sec:authentication-manager>
+        <sec:authentication-provider user-service-ref="secUserServiceImpl">
+            <sec:password-encoder ref="bcrypt"/>
+        </sec:authentication-provider>
+    </sec:authentication-manager>
+
+    <!-- 配置UserService验证登录 -->
+    <bean id="secUserServiceImpl" class="com.mytest.security.domain.common.authentication.SecUserServiceImpl"/>
+    <!-- 使用bcrypt来编码密码 -->
+    <bean name="bcrypt" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+</beans>

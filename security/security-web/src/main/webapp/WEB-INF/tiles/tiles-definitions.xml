@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+   "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+   "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+    <!-- 定义空tiles模板 -->
+    <definition name="nolayout" template="/WEB-INF/views/layout/template1.jsp">
+        <put-attribute name="body" value="" />
+    </definition>
+    <!-- 定义tiles模板:title header body footer -->
+    <definition name="layouts" template="/WEB-INF/views/layout/template2.jsp">
+        <put-attribute name="title" value="" />
+        <put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+    </definition>
+    <!-- 登录/注册页面不需要模板 -->
+    <definition name="sec01/SEC01SC01" extends="nolayout">
+        <put-attribute name="body" value="/WEB-INF/views/sec01/SEC01SC01.jsp" />
+    </definition>
+    <definition name="sec01/SEC01SC02" extends="nolayout">
+        <put-attribute name="body" value="/WEB-INF/views/sec01/SEC01SC02.jsp" />
+    </definition>
+    <!-- 其他页面需要模板 -->
+    <definition name="*/*" extends="layouts">
+        <put-attribute name="title" value="title.{1}.{2}" />
+        <put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+    </definition>
+</tiles-definitions>

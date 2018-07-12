@@ -1,0 +1,20 @@
+.sec-w80 {
+    width: 80px;
+}
+
+.sec-h20 {
+    height: 20px;
+}
+
+.sec-t2 {
+    top: 2px;
+}
+
+.float-r {
+    float:right;
+    margin: 0;
+}
+
+.error-input {
+    border-color: #b94a48;
+}

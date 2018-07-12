@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+    <description>Security JSP Tag Library</description>
+    <tlib-version>3.0</tlib-version>
+    <short-name>t</short-name>
+    <uri>http://security.mytest.com/tags</uri>
+
+    <tag>
+        <description>Display messages in Screen</description>
+        <name>messages</name>
+        <tag-class>com.mytest.security.web.common.tags.MessagesTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Set attribute name of message. default is "Messages"</description>
+            <name>messagesAttributeName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set the element for the messages list. default is "div"</description>
+            <name>listElem</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set CSS class name of this element. default is null</description>
+            <name>listClass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set the element for every message. default is "p"</description>
+            <name>lineElem</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set CSS class name of this element. default is depend on message type</description>
+            <name>lineClass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>You can change the messages type</description>
+            <name>messagesType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>

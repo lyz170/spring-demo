@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- 使用注解配置 -->
+    <!-- validator: 实现Validation。Bean Validation 1.1当前实现是Hibernate validator 5，且spring4才支持 -->
+    <mvc:annotation-driven validator="validator" />
+    <!-- 以下validator ConversionService在使用mvc:annotation-driven会自动注册 -->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <!-- hibernate的效验器 -->
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+        <!-- 如果不加默认到 使用classpath下的 ValidationMessages.properties -->
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
+
+    <!-- 设置后，会在Spring MVC上下文中定义一个DefaultServletHttpRequestHandler，对进入DispatcherServlet的URL进行筛查，
+        如果发现是静态资源的请求，就将该请求转由Web应用服务器默认的Servlet处理，如果不是静态资源的请求，才由DispatcherServlet
+        继续处理。 -->
+    <mvc:default-servlet-handler />
+    <!-- 扫描注解配置的类 -->
+    <context:component-scan base-package="com.mytest.security.web" />
+
+    <context:property-placeholder location="classpath*:/META-INF/spring/*.properties" />
+
+    <mvc:resources mapping="/resources/**" location="/resources/" cache-period="#{60 * 60}" />
+
+    <mvc:view-resolvers>
+        <mvc:bean-name />
+        <mvc:tiles />
+        <mvc:jsp prefix="/WEB-INF/views/" />
+    </mvc:view-resolvers>
+
+    <!-- SpringMVC Apache-tiles整合 -->
+    <mvc:tiles-configurer>
+        <mvc:definitions location="/WEB-INF/tiles/tiles-definitions.xml" />
+    </mvc:tiles-configurer>
+</beans>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- 固定写法 -->
+    <modelVersion>4.0.0</modelVersion>
+    <!-- 定义当前Maven项目隶属的实际项目组 -->
+    <groupId>com.mytest</groupId>
+    <!-- 定义此项目中的一个Maven项目(模块) -->
+    <artifactId>security</artifactId>
+    <!-- 版本(SNAPSHOT指开发版) -->
+    <version>1.0.0-SNAPSHOT</version>
+    <!-- Maven项目的打包方式,父级项目用pom(默认缺省为jar) -->
+    <packaging>pom</packaging>
+    <!-- 定义名字 -->
+    <name>security</name>
+    <!--
+    在父项目-子项目关系时，<dependencyManagement><dependencies>的区别：
+    <dependencyManagement>在父项目中使用，它里面只是声明依赖，并不实现引入，因此子项目需要显示的声明需要用的依赖
+    <dependencies>即使在子项目中不写该依赖项，那么子项目仍然会从父项目中继承该依赖项（全部继承）
+    *参考: http://docs.spring.io/platform/docs/1.1.2.RELEASE/reference/htmlsingle/
+    -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- 使用Spring IO platform自动管理版本 -->
+            <dependency>
+                <groupId>io.spring.platform</groupId>
+                <artifactId>platform-bom</artifactId>
+                <version>Athens-SR6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>security-env</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>security-domain</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>security-web</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- 由于历史原因，Maven的compiler插件默认只支持Java1.3，所以要设置更高版本 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>${java-version}</source>
+                        <target>${java-version}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <properties>
+        <encoding>UTF-8</encoding>
+        <java-version>1.8</java-version>
+    </properties>
+    <modules>
+        <module>security-env</module>
+        <module>security-domain</module>
+        <module>security-web</module>
+    </modules>
+</project>

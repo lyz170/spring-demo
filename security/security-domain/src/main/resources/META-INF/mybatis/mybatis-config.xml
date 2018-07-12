@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--MyBatis的Setting设置，它们会改变 MyBatis 的运行时行为。 -->
+    <settings>
+        <!-- 该配置影响的所有映射器中配置的缓存的全局开关[default:true] -->
+        <setting name="cacheEnabled" value="true"/>
+        <!-- 延迟加载的全局开关。当开启时，所有关联对象都会延迟加载[default:false] -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 是否允许单一语句返回多结果集（需要兼容驱动）[default:true] -->
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <!-- 使用列标签代替列名[default:true] -->
+        <setting name="useColumnLabel" value="true"/>
+        <!-- 允许JDBC支持自动生成主键，需要驱动兼容[default:false] -->
+        <setting name="useGeneratedKeys" value="false"/>
+        <!-- 指定MyBatis应如何自动映射列到字段或属性。NONE表示取消自动映射；
+            PARTIAL只会自动映射没有定义嵌套结果集映射的结果集。FULL会自动映射任意复杂的结果集（无论是否嵌套）[default:PARTIAL] -->
+        <setting name="autoMappingBehavior" value="PARTIAL"/>
+        <!-- 指定发现自动映射目标未知列（或者未知属性类型）的行为。NONE不做任何反应；
+            WARNING输出提醒日志('org.apache.ibatis.session.AutoMappingUnknownColumnBehavior'的日志等级必须设置为WARN)；
+            FAILING映射失败 (抛出 SqlSessionException)[default:NONE] -->
+        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+        <!-- 配置默认的执行器。SIMPLE就是普通的执行器；REUSE执行器会重用预处理语句（prepared statements）；
+            BATCH执行器将重用语句并执行批量更新[default:SIMPLE] -->
+        <setting name="defaultExecutorType" value="SIMPLE"/>
+        <!-- 设置超时时间，它决定驱动等待数据库响应的秒数 -->
+        <setting name="defaultStatementTimeout" value="25"/>
+        <!-- 为驱动的结果集获取数量（fetchSize）设置一个提示值。此参数只可以在查询设置中被覆盖 -->
+        <setting name="defaultFetchSize" value="100"/>
+        <!-- 允许在嵌套语句中使用分页（RowBounds）。如果允许使用则设置为false[default:false] -->
+        <setting name="safeRowBoundsEnabled" value="false"/>
+        <!-- 是否开启自动驼峰命名规则（camel case）映射[default:false] -->
+        <setting name="mapUnderscoreToCamelCase" value="false"/>
+        <!-- MyBatis利用本地缓存机制（Local Cache）防止循环引用（circular references）和加速重复嵌套查询。
+            默认值为SESSION，这种情况下会缓存一个会话中执行的所有查询。
+            若设置值为STATEMENT，本地会话仅用在语句执行上，对相同SqlSession的不同调用将不会共享数据 -->
+        <setting name="localCacheScope" value="SESSION"/>
+        <!-- 当没有为参数提供特定的JDBC类型时，为空值指定JDBC类型。
+            某些驱动需要指定列的JDBC类型，多数情况直接用一般类型即可，比如NULL、VARCHAR或OTHER[default:OTHER] -->
+        <setting name="jdbcTypeForNull" value="OTHER"/>
+        <!-- 指定哪个对象的方法触发一次延迟加载。[default:equals,clone,hashCode,toString] -->
+        <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+    </settings>
+
+    <!-- 类型别名是为Java类型设置一个短的名字。它只和XML配置有关，存在的意义仅在于用来减少类完全限定名的冗余。 -->
+    <typeAliases>
+        <!-- <package name="com.xx.xxx" /> -->
+    </typeAliases>
+
+    <!-- 无论是MyBatis在预处理语句（PreparedStatement）中设置一个参数时，还是从结果集中取出一个值时，
+        都会用类型处理器将获取的值以合适的方式转换成Java类型。下面方式可以自定义。-->
+    <typeHandlers>
+        <!-- <package name="com.xx.xxx.typehandler" />  -->
+    </typeHandlers>
+</configuration>
